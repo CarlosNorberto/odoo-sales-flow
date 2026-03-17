@@ -15,7 +15,7 @@ Cliente Node.js que ejecuta el flujo de ventas completo en Odoo a través de su 
 ## Instalación
 
 ```bash
-git clone https://github.com/tu-usuario/odoo-sales-flow.git
+git clone https://github.com/CarlosNorberto/odoo-sales-flow.git
 cd odoo-sales-flow
 npm install
 ```
