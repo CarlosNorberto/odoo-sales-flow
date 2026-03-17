@@ -1,11 +1,12 @@
 const { authenticate } = require('./auth');
 const { callMethod, xmlIdToResID } = require('./helps');
+const params = require('./params.json');
 
 const _prepare_order = async (uid) => {
     try {
         let order = {
-            partner_id: await xmlIdToResID('base.res_partner_12', uid),
-            date_order: '2026-01-01',
+            partner_id: await xmlIdToResID(params.order.partner_id, uid),
+            date_order: params.order.date_order,
             // order_type: 'out_invoice',
             // description: 'Test Sale Order',
             // warehouse_id: await xmlIdToResID('stock.warehouse_demo', uid),
@@ -20,28 +21,15 @@ const _prepare_order = async (uid) => {
 
 const _prepare_order_line = async (uid) => {
     try {
-        let tax_ids = [
-            await xmlIdToResID('account.1_sale_tax_template', uid),
-            await xmlIdToResID('account.1_purchase_tax_template', uid)
-        ];
-        let order_line = [
-            [0, 0, {
-                product_id: await xmlIdToResID('sale.product_product_4e', uid),
-                name: 'Test Order Line',
-                // account_id: await xmlIdToResID('account.account_demo_01', uid),
-                product_uom_qty: 1,
-                price_unit: 100,
-                tax_id: [[6, 0, tax_ids]],
-            }],
-            [0, 0, {
-                product_id: await xmlIdToResID('product.desk_organizer', uid),
-                name: 'Test Order Line 2',
-                // account_id: await xmlIdToResID('account.account_demo_01', uid),
-                product_uom_qty: 2,
-                price_unit: 50,
-                tax_id: [[6, 0, tax_ids]],
-            }]
-        ]
+        let order_line = [];
+        for (const param of params.order.order_line) {
+            order_line.push([0, 0, {
+                product_id: await xmlIdToResID(param.product_id, uid),
+                product_uom_qty: param.product_uom_qty,
+                price_unit: param.price_unit,
+                tax_id: [[6, 0, await Promise.all(param.tax_id.map(tax => xmlIdToResID(tax, uid)))]],
+            }]);
+        }        
         return order_line;
     } catch (error) {
         throw new Error(`Error in _prepare_order_line: ${error}`);

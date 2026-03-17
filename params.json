@@ -1,0 +1,26 @@
+{
+    "order": {
+        "partner_id": "base.res_partner_12",
+        "date_order": "2026-03-01",
+        "order_line": [
+            {
+                "product_id": "sale.product_product_4e",
+                "product_uom_qty": 1,
+                "price_unit": 100.0,
+                "tax_id": [
+                    "account.1_sale_tax_template",
+                    "account.1_purchase_tax_template"
+                ]
+            },
+            {
+                "product_id": "product.desk_organizer",
+                "product_uom_qty": 2,
+                "price_unit": 50.0,
+                "tax_id": [
+                    "account.1_sale_tax_template",
+                    "account.1_purchase_tax_template"
+                ]
+            }
+        ]
+    }
+}

@@ -34,6 +34,45 @@ ODOO_DB=nombre_de_tu_base_de_datos
 ODOO_USERNAME=admin
 ODOO_PASSWORD=tu_contraseña
 ```
+---
+
+## Parámetros de la venta (params.json)
+
+---
+
+Los datos de la orden se configuran en `params.json`. Los valores de `partner_id`, `product_id` y `tax_id` usan **XML IDs** de Odoo, que se resuelven automáticamente a IDs numéricos antes de crear la venta.
+
+```json
+{
+    "order": {
+        "partner_id": "base.res_partner_12",
+        "date_order": "2026-03-01",
+        "order_line": [
+            {
+                "product_id": "sale.product_product_4e",
+                "product_uom_qty": 1,
+                "price_unit": 100.0,
+                "tax_id": [
+                    "account.1_sale_tax_template",
+                    "account.1_purchase_tax_template"
+                ]
+            },
+            {
+                "product_id": "product.desk_organizer",
+                "product_uom_qty": 2,
+                "price_unit": 50.0,
+                "tax_id": [
+                    "account.1_sale_tax_template",
+                    "account.1_purchase_tax_template"
+                ]
+            }
+        ]
+    }
+}
+```
+
+Los XML IDs se encuentran en Odoo con modo desarrollador activo:
+Ajustes → Técnico → Secuencias e identificadores → Identificadores externos
 
 ---
 

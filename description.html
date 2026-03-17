@@ -1,587 +1,714 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odoo Sales Flow — Documentación</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odoo Sales Flow — Documentación</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  :root {
-    --bg:        #111111;
-    --bg2:       #1a1a1a;
-    --bg3:       #222222;
-    --border:    #2e2e2e;
-    --border2:   #3a3a3a;
-    --text:      #d4d4d4;
-    --text-dim:  #888888;
-    --text-faint:#555555;
-    --white:     #f0f0f0;
-    --mono:      'Courier New', Courier, monospace;
-    --sans:      -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
+    :root {
+      --bg: #111111;
+      --bg2: #1a1a1a;
+      --bg3: #222222;
+      --border: #2e2e2e;
+      --border2: #3a3a3a;
+      --text: #d4d4d4;
+      --text-dim: #888888;
+      --text-faint: #555555;
+      --white: #f0f0f0;
+      --mono: 'Courier New', Courier, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.7;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.7;
+    }
 
-  a { color: var(--text-dim); text-decoration: none; }
-  a:hover { color: var(--text); }
+    a {
+      color: var(--text-dim);
+      text-decoration: none;
+    }
 
-  /* ── Layout ── */
-  .page {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 60px 28px 100px;
-  }
+    a:hover {
+      color: var(--text);
+    }
 
-  /* ── Header ── */
-  .header {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 32px;
-    margin-bottom: 48px;
-  }
+    /* ── Layout ── */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 28px 100px;
+    }
 
-  .company_name{
-    font-size: 38px;
-    font-weight: bold;
-    color: var(--white);
-    margin-bottom: 40px;
-  }
+    /* ── Header ── */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 32px;
+      margin-bottom: 48px;
+    }
 
-  .badge-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-  }
+    .company_name {
+      font-size: 38px;
+      font-weight: bold;
+      color: var(--white);
+      margin-bottom: 40px;
+    }
 
-  .badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    border: 1px solid var(--border2);
-    background: var(--bg2);
-    padding: 2px 8px;
-    border-radius: 3px;
-  }
+    .badge-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
 
-  h1 {
-    font-family: var(--sans);
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--white);
-    letter-spacing: -0.02em;
-    margin-bottom: 10px;
-  }
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
 
-  .subtitle {
-    color: var(--text-dim);
-    font-size: 14px;
-    max-width: 560px;
-  }
+    h1 {
+      font-family: var(--sans);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
 
-  /* ── Sections ── */
-  section {
-    margin-bottom: 48px;
-  }
+    .subtitle {
+      color: var(--text-dim);
+      font-size: 14px;
+      max-width: 560px;
+    }
 
-  h2 {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    margin-bottom: 16px;
-    font-family: var(--mono);
-  }
+    /* ── Sections ── */
+    section {
+      margin-bottom: 48px;
+    }
 
-  p {
-    color: var(--text);
-    margin-bottom: 12px;
-  }
+    h2 {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 16px;
+      font-family: var(--mono);
+    }
 
-  /* ── Menu preview ── */
-  .menu-box {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
+    p {
+      color: var(--text);
+      margin-bottom: 12px;
+    }
 
-  .menu-bar {
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 14px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+    /* ── Menu preview ── */
+    .menu-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
 
-  .menu-bar::before {
-    content: '●  ●  ●';
-    letter-spacing: 2px;
-    font-size: 8px;
-    color: var(--border2);
-  }
+    .menu-bar {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-  .menu-body {
-    padding: 16px 20px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 2;
-  }
+    .menu-bar::before {
+      content: '●  ●  ●';
+      letter-spacing: 2px;
+      font-size: 8px;
+      color: var(--border2);
+    }
 
-  .menu-prompt { color: var(--text-dim); }
-  .menu-q      { color: var(--white); }
-  .menu-sep    { color: var(--text-faint); font-size: 12px; }
-  .menu-item   { color: var(--text); padding-left: 4px; }
-  .menu-active { color: var(--white); }
-  .menu-active::before { content: '❯ '; }
-  .menu-item:not(.menu-active)::before { content: '  '; }
+    .menu-body {
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 2;
+    }
 
-  /* ── Flow table ── */
-  .flow-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
+    .menu-prompt {
+      color: var(--text-dim);
+    }
 
-  .flow-table th {
-    text-align: left;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    font-weight: 400;
-  }
+    .menu-q {
+      color: var(--white);
+    }
 
-  .flow-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-    color: var(--text);
-    line-height: 1.5;
-  }
+    .menu-sep {
+      color: var(--text-faint);
+      font-size: 12px;
+    }
 
-  .flow-table tr:last-child td { border-bottom: none; }
+    .menu-item {
+      color: var(--text);
+      padding-left: 4px;
+    }
 
-  .flow-table td:first-child {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-    white-space: nowrap;
-    width: 44px;
-  }
+    .menu-active {
+      color: var(--white);
+    }
 
-  .flow-table td:nth-child(2) {
-    color: var(--white);
-    font-size: 13px;
-  }
+    .menu-active::before {
+      content: '❯ ';
+    }
 
-  .flow-table td:nth-child(3) {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-  }
+    .menu-item:not(.menu-active)::before {
+      content: '  ';
+    }
 
-  /* ── State pill ── */
-  .state {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 1px 7px;
-    border-radius: 3px;
-    border: 1px solid var(--border2);
-    color: var(--text-dim);
-    margin-left: 6px;
-    vertical-align: middle;
-  }
+    /* ── Flow table ── */
+    .flow-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
 
-  /* ── Code block ── */
-  .code {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
+    .flow-table th {
+      text-align: left;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 400;
+    }
 
-  .code-label {
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-    padding: 6px 14px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-  }
+    .flow-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-  pre {
-    padding: 16px 20px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--text-dim);
-    overflow-x: auto;
-  }
+    .flow-table tr:last-child td {
+      border-bottom: none;
+    }
 
-  code {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-    background: var(--bg3);
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
+    .flow-table td:first-child {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      width: 44px;
+    }
 
-  /* ── Deps list ── */
-  .dep {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .dep:last-child { border-bottom: none; }
+    .flow-table td:nth-child(2) {
+      color: var(--white);
+      font-size: 13px;
+    }
 
-  .dep-name {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--white);
-    min-width: 100px;
-  }
+    .flow-table td:nth-child(3) {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
 
-  .dep-ver {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-    min-width: 60px;
-  }
+    /* ── State pill ── */
+    .state {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 3px;
+      border: 1px solid var(--border2);
+      color: var(--text-dim);
+      margin-left: 6px;
+      vertical-align: middle;
+    }
 
-  .dep-desc {
-    font-size: 13px;
-    color: var(--text-dim);
-  }
+    /* ── Code block ── */
+    .code {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
 
-  /* ── Env table ── */
-  .env-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--mono);
-    font-size: 12px;
-  }
+    .code-label {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
 
-  .env-table td {
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-  }
+    pre {
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-dim);
+      overflow-x: auto;
+    }
 
-  .env-table tr:last-child td { border-bottom: none; }
-  .env-key  { color: var(--text-dim); width: 160px; }
-  .env-val  { color: var(--text-faint); }
-  .env-desc { color: var(--text-dim); font-size: 11px; font-family: var(--sans); }
+    code {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      background: var(--bg3);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
 
-  /* ── Error block ── */
-  .err-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .err-row:last-child { border-bottom: none; }
-  .err-code { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-  .err-fix  { color: var(--text-faint); font-size: 12px; }
+    /* ── Deps list ── */
+    .dep {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
 
-  /* ── File tree ── */
-  .tree {
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 2;
-    color: var(--text-dim);
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px 20px;
-  }
-  .tree-dir  { color: var(--text); }
-  .tree-note { color: var(--text-faint); font-size: 11px; }
+    .dep:last-child {
+      border-bottom: none;
+    }
 
-  /* ── Footer ── */
-  .footer {
-    margin-top: 80px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-faint);
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-</style>
+    .dep-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--white);
+      min-width: 100px;
+    }
+
+    .dep-ver {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      min-width: 60px;
+    }
+
+    .dep-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    /* ── Env table ── */
+    .env-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .env-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .env-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .env-key {
+      color: var(--text-dim);
+      width: 160px;
+    }
+
+    .env-val {
+      color: var(--text-faint);
+    }
+
+    .env-desc {
+      color: var(--text-dim);
+      font-size: 11px;
+      font-family: var(--sans);
+    }
+
+    /* ── Error block ── */
+    .err-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .err-row:last-child {
+      border-bottom: none;
+    }
+
+    .err-code {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .err-fix {
+      color: var(--text-faint);
+      font-size: 12px;
+    }
+
+    /* ── File tree ── */
+    .tree {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 2;
+      color: var(--text-dim);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+    }
+
+    .tree-dir {
+      color: var(--text);
+    }
+
+    .tree-note {
+      color: var(--text-faint);
+      font-size: 11px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 80px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  </style>
 </head>
+
 <body>
-<div class="page">
+  <div class="page">
 
-  <!-- HEADER -->
-  <header class="header">
-    <h1 class="company_name">Versatil</h1>
-    <div class="badge-row">
-      <span class="badge">Node.js</span>
-      <span class="badge">JSON-RPC 2.0</span>
-      <span class="badge">Odoo</span>
-      <span class="badge">inquirer@8</span>
-    </div>
-    <h1>Odoo Sales Flow</h1>
-    <p class="subtitle">
-      Cliente Node.js que ejecuta el flujo de ventas completo en Odoo vía JSON-RPC,
-      controlado desde una CLI interactiva en terminal.
-    </p>
-  </header>
-
-  <!-- CLI PREVIEW -->
-  <section>
-    <h2>CLI interactiva</h2>
-    <div class="menu-box">
-      <div class="menu-bar">app.js</div>
-      <div class="menu-body">
-        <div><span class="menu-prompt">$</span> <span class="menu-q">node ./app.js</span></div>
-        <div>&nbsp;</div>
-        <div><span class="menu-prompt">?</span> ¿Qué querés ejecutar?</div>
-        <div class="menu-sep">── Pasos individuales ──────────────</div>
-        <div class="menu-item menu-active">1. Autenticar</div>
-        <div class="menu-item">2. Crear venta</div>
-        <div class="menu-item">3. Crear y confirmar venta</div>
-        <div class="menu-item">4. Crear, confirmar y validar salida de productos</div>
-        <div class="menu-item">5. Crear, confirmar y crear factura</div>
-        <div class="menu-item">6. Confirmar factura (Flujo completo)</div>
-        <div class="menu-sep">───────────────────────────────────</div>
-        <div class="menu-item">Salir</div>
+    <!-- HEADER -->
+    <header class="header">
+      <h1 class="company_name">Versatil</h1>
+      <div class="badge-row">
+        <span class="badge">Node.js</span>
+        <span class="badge">JSON-RPC 2.0</span>
+        <span class="badge">Odoo</span>
+        <span class="badge">inquirer@8</span>
       </div>
-    </div>
-  </section>
+      <h1>Odoo Sales Flow</h1>
+      <p class="subtitle">
+        Cliente Node.js que ejecuta el flujo de ventas completo en Odoo vía JSON-RPC,
+        controlado desde una CLI interactiva en terminal.
+      </p>
+    </header>
 
-  <!-- FLUJO -->
-  <section>
-    <h2>Qué ejecuta cada opción</h2>
-    <table class="flow-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Descripción</th>
-          <th>Estado final en Odoo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>Autenticar — obtiene el <code>uid</code> de sesión</td>
-          <td>uid</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Crear venta — genera <code>sale.order</code></td>
-          <td>draft</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Crear y confirmar venta</td>
-          <td>sale</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>+ Obtener picking y validar salida de productos</td>
-          <td>done</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>+ Crear factura desde la venta</td>
-          <td>draft</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>+ Confirmar factura — <strong>flujo completo</strong></td>
-          <td>posted</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+    <!-- CLI PREVIEW -->
+    <section>
+      <h2>CLI interactiva</h2>
+      <div class="menu-box">
+        <div class="menu-bar">app.js</div>
+        <div class="menu-body">
+          <div><span class="menu-prompt">$</span> <span class="menu-q">node ./app.js</span></div>
+          <div>&nbsp;</div>
+          <div><span class="menu-prompt">?</span> ¿Qué querés ejecutar?</div>
+          <div class="menu-sep">── Pasos individuales ──────────────</div>
+          <div class="menu-item menu-active">1. Autenticar</div>
+          <div class="menu-item">2. Crear venta</div>
+          <div class="menu-item">3. Crear y confirmar venta</div>
+          <div class="menu-item">4. Crear, confirmar y validar salida de productos</div>
+          <div class="menu-item">5. Crear, confirmar y crear factura</div>
+          <div class="menu-item">6. Confirmar factura (Flujo completo)</div>
+          <div class="menu-sep">───────────────────────────────────</div>
+          <div class="menu-item">Salir</div>
+        </div>
+      </div>
+    </section>
 
-  <!-- OPERACIONES -->
-  <section>
-    <h2>Operaciones (operations.js)</h2>
-    <table class="flow-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Función</th>
-          <th>Modelo / Método RPC</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td><code>createSaleOrder()</code></td>
-          <td>sale.order → create</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><code>confirmSaleOrder(saleId)</code></td>
-          <td>sale.order → action_confirm</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><code>getPickingIdForSale(saleId)</code></td>
-          <td>stock.picking → search_read</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><code>validateAndCreateBackorderStockPicking(pickingId)</code></td>
-          <td>stock.picking → button_validate</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><code>createInvoiceFromSale(saleId)</code></td>
-          <td>sale.order → _create_invoices</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td><code>confirmInvoice(invoiceId)</code></td>
-          <td>account.move → action_post</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- ESTRUCTURA -->
-  <section>
-    <h2>Estructura del proyecto</h2>
-    <div class="tree">
-      <span class="tree-dir">odoo-sales-flow/</span><br>
-      &nbsp;&nbsp;<span class="tree-dir">├── src/</span><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>app.js<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← menú interactivo (inquirer)</span><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>auth.js<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← autenticación JSON-RPC</span><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; └── </span>operations.js<span class="tree-note">&nbsp;← todas las operaciones Odoo</span><br>
-      &nbsp;&nbsp;<span class="tree-dir">├── </span>.env<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← credenciales (no versionar)</span><br>
-      &nbsp;&nbsp;<span class="tree-dir">├── </span>.env.example<br>
-      &nbsp;&nbsp;<span class="tree-dir">├── </span>package.json<br>
-      &nbsp;&nbsp;<span class="tree-dir">└── </span>README.md
-    </div>
-  </section>
-
-  <!-- ENV -->
-  <section>
-    <h2>Variables de entorno</h2>
-    <div class="code">
-      <div class="code-label">.env</div>
-      <table class="env-table" style="margin:0; border:none;">
+    <!-- FLUJO -->
+    <section>
+      <h2>Qué ejecuta cada opción</h2>
+      <table class="flow-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Descripción</th>
+            <th>Estado final en Odoo</th>
+          </tr>
+        </thead>
         <tbody>
           <tr>
-            <td class="env-key">ODOO_URL</td>
-            <td class="env-val">http://localhost:8069</td>
-            <td class="env-desc">URL base de la instancia</td>
+            <td>1</td>
+            <td>Autenticar — obtiene el <code>uid</code> de sesión</td>
+            <td>uid</td>
           </tr>
           <tr>
-            <td class="env-key">ODOO_DB</td>
-            <td class="env-val">nombre_de_tu_db</td>
-            <td class="env-desc">Nombre de la base de datos</td>
+            <td>2</td>
+            <td>Crear venta — genera <code>sale.order</code></td>
+            <td>draft</td>
           </tr>
           <tr>
-            <td class="env-key">ODOO_USERNAME</td>
-            <td class="env-val">admin</td>
-            <td class="env-desc">Usuario con permisos de venta</td>
+            <td>3</td>
+            <td>Crear y confirmar venta</td>
+            <td>sale</td>
           </tr>
           <tr>
-            <td class="env-key">ODOO_PASSWORD</td>
-            <td class="env-val">••••••••</td>
-            <td class="env-desc">Contraseña o API Key</td>
+            <td>4</td>
+            <td>+ Obtener picking y validar salida de productos</td>
+            <td>done</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>+ Crear factura desde la venta</td>
+            <td>draft</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>+ Confirmar factura — <strong>flujo completo</strong></td>
+            <td>posted</td>
           </tr>
         </tbody>
       </table>
-    </div>
-  </section>
+    </section>
 
-  <!-- INSTALACION -->
-  <section>
-    <h2>Instalación</h2>
-    <div class="code">
-      <div class="code-label">bash</div>
-      <pre>git clone https://github.com/tu-usuario/odoo-sales-flow.git
+    <!-- OPERACIONES -->
+    <section>
+      <h2>Operaciones (operations.js)</h2>
+      <table class="flow-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Función</th>
+            <th>Modelo / Método RPC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>createSaleOrder()</code></td>
+            <td>sale.order → create</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>confirmSaleOrder(saleId)</code></td>
+            <td>sale.order → action_confirm</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>getPickingIdForSale(saleId)</code></td>
+            <td>stock.picking → search_read</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>validateAndCreateBackorderStockPicking(pickingId)</code></td>
+            <td>stock.picking → button_validate</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>createInvoiceFromSale(saleId)</code></td>
+            <td>sale.order → _create_invoices</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>confirmInvoice(invoiceId)</code></td>
+            <td>account.move → action_post</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ESTRUCTURA -->
+    <section>
+      <h2>Estructura del proyecto</h2>
+      <div class="tree">
+        <span class="tree-dir">odoo-sales-flow/</span><br>
+        &nbsp;&nbsp;<span class="tree-dir">├── src/</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>app.js<span
+          class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← menú interactivo (inquirer)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>auth.js<span
+          class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← autenticación JSON-RPC</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; └── </span>operations.js<span
+          class="tree-note">&nbsp;← todas las operaciones Odoo</span><br>
+        &nbsp;&nbsp;<span class="tree-dir">├── </span>.env<span
+          class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← credenciales
+          (no versionar)</span><br>
+        &nbsp;&nbsp;<span class="tree-dir">├── </span>.env.example<br>
+        &nbsp;&nbsp;<span class="tree-dir">├── </span>package.json<br>
+        &nbsp;&nbsp;<span class="tree-dir">└── </span>README.md
+      </div>
+    </section>
+
+    <!-- ENV -->
+    <section>
+      <h2>Variables de entorno</h2>
+      <div class="code">
+        <div class="code-label">.env</div>
+        <table class="env-table" style="margin:0; border:none;">
+          <tbody>
+            <tr>
+              <td class="env-key">ODOO_URL</td>
+              <td class="env-val">http://localhost:8069</td>
+              <td class="env-desc">URL base de la instancia</td>
+            </tr>
+            <tr>
+              <td class="env-key">ODOO_DB</td>
+              <td class="env-val">nombre_de_tu_db</td>
+              <td class="env-desc">Nombre de la base de datos</td>
+            </tr>
+            <tr>
+              <td class="env-key">ODOO_USERNAME</td>
+              <td class="env-val">admin</td>
+              <td class="env-desc">Usuario con permisos de venta</td>
+            </tr>
+            <tr>
+              <td class="env-key">ODOO_PASSWORD</td>
+              <td class="env-val">••••••••</td>
+              <td class="env-desc">Contraseña o API Key</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PARAMS -->
+    <section>
+      <h2>Parámetros de la venta</h2>
+      <p style="color:var(--text-dim); font-size:13px; margin-bottom:16px;">
+        Los datos de la orden se configuran en <code>params.json</code>.
+        Los campos <code>partner_id</code>, <code>product_id</code> y <code>tax_id</code>
+        usan XML IDs de Odoo, resueltos a IDs numéricos antes de crear la venta.
+      </p>
+      <div class="code">
+        <div class="code-label">params.json</div>
+        <pre>
+          {
+              "order": {
+                  "partner_id": "base.res_partner_12",
+                  "date_order": "2026-03-01",
+                  "order_line": [
+                      {
+                          "product_id": "sale.product_product_4e",
+                          "product_uom_qty": 1,
+                          "price_unit": 100.0,
+                          "tax_id": [
+                              "account.1_sale_tax_template",
+                              "account.1_purchase_tax_template"
+                          ]
+                      },
+                      {
+                          "product_id": "product.desk_organizer",
+                          "product_uom_qty": 2,
+                          "price_unit": 50.0,
+                          "tax_id": [
+                              "account.1_sale_tax_template",
+                              "account.1_purchase_tax_template"
+                          ]
+                      }
+                  ]
+              }
+          }
+        </pre>
+      </div>      
+      <p style="color:var(--text-faint); font-size:11px; font-family:var(--mono); margin-top:14px;">
+        Los XML IDs se encuentran en Odoo con modo desarrollador activo:<br>
+        Ajustes → Técnico → Secuencias e identificadores → Identificadores externos
+      </p>
+    </section>
+
+    <!-- INSTALACION -->
+    <section>
+      <h2>Instalación</h2>
+      <div class="code">
+        <div class="code-label">bash</div>
+        <pre>git clone https://github.com/tu-usuario/odoo-sales-flow.git
 cd odoo-sales-flow
 npm install
 cp .env.example .env
 node ./app.js</pre>
-    </div>
-  </section>
-
-  <!-- DEPS -->
-  <section>
-    <h2>Dependencias</h2>
-    <div class="dep">
-      <span class="dep-name">axios</span>
-      <span class="dep-ver">latest</span>
-      <span class="dep-desc">Llamadas HTTP al endpoint JSON-RPC de Odoo</span>
-    </div>
-    <div class="dep">
-      <span class="dep-name">dotenv</span>
-      <span class="dep-ver">latest</span>
-      <span class="dep-desc">Carga de credenciales desde <code>.env</code></span>
-    </div>
-    <div class="dep">
-      <span class="dep-name">inquirer</span>
-      <span class="dep-ver">^8.0.0</span>
-      <span class="dep-desc">Menú interactivo en terminal (CommonJS)</span>
-    </div>
-  </section>
-
-  <!-- ERRORES -->
-  <section>
-    <h2>Manejo de errores</h2>
-    <p style="color:var(--text-dim); margin-bottom:16px; font-size:13px;">
-      Los errores técnicos (red, credenciales, Odoo) muestran el mensaje y terminan con <code>exit 1</code>.
-      Los errores de autenticación vuelven al menú sin interrumpir la sesión.
-    </p>
-    <div class="err-row">
-      <div>
-        <div class="err-code">Autenticación fallida</div>
-        <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Credenciales incorrectas o DB errónea</div>
       </div>
-      <div class="err-fix">Vuelve al menú · verificar .env</div>
-    </div>
-    <div class="err-row">
-      <div>
-        <div class="err-code">Access Denied</div>
-        <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Sin permisos sobre el modelo</div>
-      </div>
-      <div class="err-fix">Sale con exit 1 · asignar grupos en Odoo</div>
-    </div>
-    <div class="err-row">
-      <div>
-        <div class="err-code">ECONNREFUSED</div>
-        <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Odoo no disponible o URL incorrecta</div>
-      </div>
-      <div class="err-fix">Sale con exit 1 · verificar ODOO_URL</div>
-    </div>
-  </section>
+    </section>
 
-  <footer class="footer">
-    <span>Odoo Sales Flow · Node.js + JSON-RPC 2.0</span>
-    <span>MIT © 2026</span>
-  </footer>
+    <!-- DEPS -->
+    <section>
+      <h2>Dependencias</h2>
+      <div class="dep">
+        <span class="dep-name">axios</span>
+        <span class="dep-ver">latest</span>
+        <span class="dep-desc">Llamadas HTTP al endpoint JSON-RPC de Odoo</span>
+      </div>
+      <div class="dep">
+        <span class="dep-name">dotenv</span>
+        <span class="dep-ver">latest</span>
+        <span class="dep-desc">Carga de credenciales desde <code>.env</code></span>
+      </div>
+      <div class="dep">
+        <span class="dep-name">inquirer</span>
+        <span class="dep-ver">^8.0.0</span>
+        <span class="dep-desc">Menú interactivo en terminal (CommonJS)</span>
+      </div>
+    </section>
 
-</div>
+    <!-- ERRORES -->
+    <section>
+      <h2>Manejo de errores</h2>
+      <p style="color:var(--text-dim); margin-bottom:16px; font-size:13px;">
+        Los errores técnicos (red, credenciales, Odoo) muestran el mensaje y terminan con <code>exit 1</code>.
+        Los errores de autenticación vuelven al menú sin interrumpir la sesión.
+      </p>
+      <div class="err-row">
+        <div>
+          <div class="err-code">Autenticación fallida</div>
+          <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Credenciales incorrectas o DB errónea
+          </div>
+        </div>
+        <div class="err-fix">Vuelve al menú · verificar .env</div>
+      </div>
+      <div class="err-row">
+        <div>
+          <div class="err-code">Access Denied</div>
+          <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Sin permisos sobre el modelo</div>
+        </div>
+        <div class="err-fix">Sale con exit 1 · asignar grupos en Odoo</div>
+      </div>
+      <div class="err-row">
+        <div>
+          <div class="err-code">ECONNREFUSED</div>
+          <div style="font-size:12px; color:var(--text-faint); margin-top:3px;">Odoo no disponible o URL incorrecta
+          </div>
+        </div>
+        <div class="err-fix">Sale con exit 1 · verificar ODOO_URL</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Odoo Sales Flow · Node.js + JSON-RPC 2.0</span>
+      <span>MIT © 2026</span>
+    </footer>
+
+  </div>
 </body>
+
 </html>
