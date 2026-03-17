@@ -38,7 +38,7 @@ ODOO_PASSWORD=tu_contraseña
 ## Uso
 
 ```bash
-node src/cli.js
+node ./app.js
 ```
 
 Al ejecutarlo aparece un menú interactivo en la terminal:
