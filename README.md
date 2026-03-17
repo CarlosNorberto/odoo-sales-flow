@@ -1,3 +1,5 @@
+# VERSATIL
+
 # Odoo Sales Flow — Node.js JSON-RPC
 
 Cliente Node.js que ejecuta el flujo de ventas completo en Odoo a través de su API JSON-RPC 2.0, controlado desde una CLI interactiva en terminal.
@@ -126,4 +128,4 @@ npm install axios dotenv inquirer@8
 
 ## Licencia
 
-MIT © 2025
+MIT © 2026

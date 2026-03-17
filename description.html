@@ -46,6 +46,13 @@
     margin-bottom: 48px;
   }
 
+  .company_name{
+    font-size: 38px;
+    font-weight: bold;
+    color: var(--white);
+    margin-bottom: 40px;
+  }
+
   .badge-row {
     display: flex;
     gap: 6px;
@@ -331,6 +338,7 @@
 
   <!-- HEADER -->
   <header class="header">
+    <h1 class="company_name">Versatil</h1>
     <div class="badge-row">
       <span class="badge">Node.js</span>
       <span class="badge">JSON-RPC 2.0</span>
@@ -348,9 +356,9 @@
   <section>
     <h2>CLI interactiva</h2>
     <div class="menu-box">
-      <div class="menu-bar">cli.js</div>
+      <div class="menu-bar">app.js</div>
       <div class="menu-body">
-        <div><span class="menu-prompt">$</span> <span class="menu-q">node src/cli.js</span></div>
+        <div><span class="menu-prompt">$</span> <span class="menu-q">node ./app.js</span></div>
         <div>&nbsp;</div>
         <div><span class="menu-prompt">?</span> ¿Qué querés ejecutar?</div>
         <div class="menu-sep">── Pasos individuales ──────────────</div>
@@ -464,7 +472,7 @@
     <div class="tree">
       <span class="tree-dir">odoo-sales-flow/</span><br>
       &nbsp;&nbsp;<span class="tree-dir">├── src/</span><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>cli.js<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← menú interactivo (inquirer)</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>app.js<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← menú interactivo (inquirer)</span><br>
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; ├── </span>auth.js<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← autenticación JSON-RPC</span><br>
       &nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-dir">│&nbsp;&nbsp; └── </span>operations.js<span class="tree-note">&nbsp;← todas las operaciones Odoo</span><br>
       &nbsp;&nbsp;<span class="tree-dir">├── </span>.env<span class="tree-note">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← credenciales (no versionar)</span><br>
@@ -515,7 +523,7 @@
 cd odoo-sales-flow
 npm install
 cp .env.example .env
-node src/cli.js</pre>
+node ./app.js</pre>
     </div>
   </section>
 
@@ -571,7 +579,7 @@ node src/cli.js</pre>
 
   <footer class="footer">
     <span>Odoo Sales Flow · Node.js + JSON-RPC 2.0</span>
-    <span>MIT © 2025</span>
+    <span>MIT © 2026</span>
   </footer>
 
 </div>
