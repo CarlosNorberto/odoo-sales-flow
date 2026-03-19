@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odoo Sales Flow — Guía de implementación</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #111111;
+    --bg2:       #1a1a1a;
+    --bg3:       #222222;
+    --border:    #2e2e2e;
+    --border2:   #3a3a3a;
+    --text:      #d4d4d4;
+    --text-dim:  #888888;
+    --text-faint:#555555;
+    --white:     #f0f0f0;
+    --mono:      'Courier New', Courier, monospace;
+    --sans:      -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 28px 100px;
+  }
+
+  /* ── Header ── */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 52px;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+    max-width: 600px;
+    line-height: 1.7;
+  }
+
+  /* ── Sections ── */
+  section { margin-bottom: 56px; }
+
+  h2 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+    font-family: var(--mono);
+  }
+
+  h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    margin: 20px 0 10px;
+  }
+
+  p {
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  p strong { color: var(--text); font-weight: 600; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  /* ── Note / warn blocks ── */
+  .note {
+    border-left: 2px solid var(--border2);
+    padding: 10px 14px;
+    background: var(--bg2);
+    border-radius: 0 4px 4px 0;
+    margin: 16px 0;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  .note.warn  { border-color: #4a3a1a; background: #161006; }
+  .note.good  { border-color: #1a3a1a; background: #060e06; }
+
+  .note-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 5px;
+  }
+
+  .note.warn .note-label { color: #6a5a2a; }
+  .note.good .note-label { color: #2a5a2a; }
+
+  /* ── Code block ── */
+  .code {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 14px 0;
+  }
+
+  .code-label {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  pre {
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.85;
+    color: var(--text-dim);
+    overflow-x: auto;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    background: var(--bg3);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 14px 0;
+  }
+
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-dim);
+    line-height: 1.55;
+    font-size: 13px;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 11px; }
+  td strong { color: var(--text); font-weight: 500; }
+
+  /* ── Flow steps ── */
+  .flow { margin: 20px 0; }
+
+  .flow-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 2px;
+  }
+
+  .flow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .flow-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .flow-line {
+    width: 1px;
+    flex: 1;
+    background: var(--border);
+    min-height: 12px;
+    margin: 3px 0;
+  }
+
+  .flow-body {
+    padding: 2px 0 20px;
+    flex: 1;
+  }
+
+  .flow-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 3px;
+  }
+
+  .flow-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .flow-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    margin-top: 5px;
+  }
+
+  /* ── Inline cm (comment style in pre) ── */
+  .cm { color: #444; font-style: italic; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="badge-row">
+      <span class="badge">JSON-RPC 2.0</span>
+      <span class="badge">Odoo v16–v18</span>
+      <span class="badge">Cualquier lenguaje</span>
+    </div>
+    <h1>Odoo Sales Flow</h1>
+    <p class="subtitle">
+      Guía de implementación del flujo de ventas completo en Odoo vía JSON-RPC.
+      Los conceptos y la estructura de los requests aplican a cualquier lenguaje
+      con soporte HTTP y JSON.
+    </p>
+  </header>
+
+  <!-- CONEXION -->
+  <section>
+    <h2>Conexión y autenticación</h2>
+    <p>
+      Toda comunicación con Odoo se hace mediante <strong>HTTP POST a un único endpoint</strong>:
+      <code>{ODOO_URL}/jsonrpc</code>. No hay múltiples endpoints por recurso como en REST —
+      el modelo y método a ejecutar van dentro del body del request.
+    </p>
+    <p>
+      Antes de cualquier operación hay que autenticarse para obtener el <strong>uid</strong>
+      (user ID). Este número se envía en cada request posterior junto con la contraseña.
+      No hay tokens ni sesiones con estado — cada llamada se autentica por sí sola.
+    </p>
+
+    <div class="code">
+      <div class="code-label">request de autenticación</div>
+      <pre>{
+  "jsonrpc": "2.0",
+  "method":  "call",
+  "id":      1,
+  "params": {
+    "service": "common",
+    "method":  "login",
+    "args":    ["nombre_db", "usuario", "password"]
+  }
+}</pre>
+    </div>
+
+    <div class="note warn">
+      <div class="note-label">Importante</div>
+      Odoo devuelve <strong>HTTP 200 aunque las credenciales sean incorrectas</strong>.
+      Si el login falla, <code>result</code> es <code>false</code> o <code>null</code> — no hay un error HTTP.
+      Siempre verificar el valor de <code>result</code> explícitamente antes de continuar.
+    </div>
+
+    <h3>Estructura de todos los requests posteriores</h3>
+    <p>Una vez obtenido el <code>uid</code>, todos los requests usan <code>service: "object"</code> y <code>method: "execute_kw"</code>:</p>
+
+    <div class="code">
+      <div class="code-label">estructura base — cualquier operación</div>
+      <pre>{
+  "jsonrpc": "2.0",
+  "method":  "call",
+  "id":      1,
+  "params": {
+    "service": "object",
+    "method":  "execute_kw",
+    "args": [
+      "nombre_db",   <span class="cm">// base de datos</span>
+      2,             <span class="cm">// uid obtenido al autenticar</span>
+      "password",    <span class="cm">// contraseña (va en cada request)</span>
+      "sale.order",  <span class="cm">// modelo de Odoo</span>
+      "create",      <span class="cm">// método del modelo</span>
+      [[{ ... }]],   <span class="cm">// argumentos posicionales</span>
+      {}             <span class="cm">// argumentos nombrados (kwargs)</span>
+    ]
+  }
+}</pre>
+    </div>
+
+    <h3>El campo id del request</h3>
+    <p>
+      El <code>id</code> es parte del protocolo JSON-RPC 2.0, no de Odoo.
+      Sirve para correlacionar requests y responses en sistemas asíncronos donde
+      múltiples llamadas pueden estar "en vuelo" al mismo tiempo. Odoo siempre
+      responde de forma sincrónica, por lo que puede ser cualquier número o string.
+      <strong>Para sistemas con colas de mensajes o workers en paralelo, usar un identificador
+      único y significativo</strong> (ej. <code>"orden-juan-1711234500"</code>) permite
+      saber exactamente a qué solicitud corresponde cada respuesta.
+    </p>
+
+    <h3>Errores de negocio vs errores de red</h3>
+    <p>Hay dos tipos de error con mecanismos distintos de detección:</p>
+
+    <table>
+      <thead><tr><th>Tipo</th><th>Cómo se detecta</th><th>Dónde está el mensaje</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Error de red</strong></td>
+          <td>La librería HTTP lanza una excepción</td>
+          <td>En el objeto de error de la excepción</td>
+        </tr>
+        <tr>
+          <td><strong>Error de negocio</strong></td>
+          <td>HTTP 200, verificar <code>response.error</code></td>
+          <td><code>response.error.data.message</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="code">
+      <div class="code-label">estructura de respuesta con error de negocio</div>
+      <pre>{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": 200,
+    "message": "Odoo Server Error",
+    "data": {
+      "name":    "odoo.exceptions.ValidationError",
+      "message": "El producto con id 9999 no existe",  <span class="cm">// mensaje legible</span>
+      "debug":   "Traceback ..."                       <span class="cm">// stack trace completo</span>
+    }
+  }
+}</pre>
+    </div>
+  </section>
+
+  <!-- FLUJO COMPLETO -->
+  <section>
+    <h2>Flujo de ventas</h2>
+    <p>El flujo completo involucra 6 operaciones en orden estricto. Cada una depende del resultado de la anterior.</p>
+
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-col"><div class="flow-dot">1</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Autenticar</div>
+          <div class="flow-desc">Obtener el <code>uid</code> del usuario. Se reutiliza en todos los requests siguientes.</div>
+          <div class="flow-meta">service: common / method: login</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-col"><div class="flow-dot">2</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Crear venta</div>
+          <div class="flow-desc">Genera <code>sale.order</code> en estado <code>draft</code>. No mueve inventario ni genera asientos contables todavía.</div>
+          <div class="flow-meta">sale.order → create → retorna [saleId]</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-col"><div class="flow-dot">3</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Confirmar venta</div>
+          <div class="flow-desc">Cambia el estado a <code>sale</code>. Como efecto colateral, Odoo genera automáticamente una orden de entrega (<code>stock.picking</code>) en el almacén.</div>
+          <div class="flow-meta">sale.order → action_confirm</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-col"><div class="flow-dot">4</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Validar salida de productos</div>
+          <div class="flow-desc">Obtener el <code>picking_id</code> asociado a la venta, luego validarlo. Este paso tiene lógica condicional — ver sección detallada abajo.</div>
+          <div class="flow-meta">stock.picking → search_read + button_validate</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-col"><div class="flow-dot">5</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Crear factura</div>
+          <div class="flow-desc">Se usa un wizard (<code>sale.advance.payment.inv</code>) — no se crea el <code>account.move</code> directamente. Ver sección detallada abajo.</div>
+          <div class="flow-meta">sale.advance.payment.inv → create + create_invoices</div>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-col"><div class="flow-dot">6</div></div>
+        <div class="flow-body">
+          <div class="flow-title">Confirmar factura</div>
+          <div class="flow-desc">Publica la factura cambiando su estado a <code>posted</code>. Lista para pago y contabilidad.</div>
+          <div class="flow-meta">account.move → action_post</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREAR VENTA -->
+  <section>
+    <h2>Detalle — Crear venta</h2>
+    <p>
+      El modelo <code>sale.order</code> requiere un partner y al menos una línea de producto.
+      Los campos <code>partner_id</code>, <code>product_id</code> y <code>tax_id</code>
+      esperan <strong>IDs numéricos</strong>, no nombres. Para obtener esos IDs a partir de
+      nombres estables entre instalaciones, usar XML IDs — ver sección XML IDs más abajo.
+    </p>
+
+    <div class="code">
+      <div class="code-label">args para crear una venta con líneas</div>
+      <pre>args: [[{
+  "partner_id": 14,
+  "date_order":  "2026-03-01",
+  "order_line": [
+    [0, 0, {                        <span class="cm">// [0,0,{}] = crear línea nueva</span>
+      "product_id":      42,
+      "product_uom_qty": 1,
+      "price_unit":      100.0,
+      "tax_id": [[6, 0, [5, 8]]]    <span class="cm">// [6,0,[ids]] = reemplazar relación</span>
+    }]
+  ]
+}]]</pre>
+    </div>
+
+    <h3>Comandos de campos relacionales</h3>
+    <table>
+      <thead><tr><th>Comando</th><th>Qué hace</th><th>Cuándo usarlo</th></tr></thead>
+      <tbody>
+        <tr><td><code>[0, 0, {...}]</code></td><td>Crea un registro y lo vincula</td><td>Líneas de orden, líneas de factura</td></tr>
+        <tr><td><code>[6, 0, [ids]]</code></td><td>Reemplaza toda la relación con los IDs dados</td><td>Impuestos, etiquetas</td></tr>
+        <tr><td><code>[4, id, 0]</code></td><td>Vincula un registro existente sin tocar los demás</td><td>Agregar un ítem a una lista existente</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Retorno:</strong> <code>create</code> devuelve un array con el ID del registro creado: <code>[57]</code>.</p>
+  </section>
+
+  <!-- STOCK PICKING -->
+  <section>
+    <h2>Detalle — Validar salida de productos</h2>
+    <p>
+      Este es el paso más complejo porque <code>button_validate</code> puede retornar
+      cosas distintas dependiendo del estado del inventario y la configuración de Odoo.
+      <strong>Nunca asumir que retorna un valor fijo</strong> — siempre verificar
+      <code>res_model</code> en la respuesta.
+    </p>
+
+    <h3>Paso 1 — Obtener el picking de la venta</h3>
+    <p>Al confirmar la venta, Odoo crea automáticamente un <code>stock.picking</code>. Hay que buscarlo por el ID de la venta:</p>
+
+    <div class="code">
+      <div class="code-label">buscar el picking asociado</div>
+      <pre>modelo:  "stock.picking"
+método:  "search_read"
+args:    [[["sale_id", "=", 57]]]
+kwargs:  { "fields": ["id"], "limit": 1 }
+
+retorna: [{ "id": 35 }]</pre>
+    </div>
+
+    <h3>Paso 2 — Validar con button_validate</h3>
+    <p><code>button_validate</code> puede retornar tres cosas distintas:</p>
+
+    <table>
+      <thead><tr><th>Retorno</th><th>Qué significa</th><th>Qué hacer</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>true</code></td>
+          <td>Stock suficiente, picking validado directamente</td>
+          <td>Nada más — el picking ya está en <code>done</code></td>
+        </tr>
+        <tr>
+          <td><code>res_model: "confirm.stock.sms"</code></td>
+          <td>Odoo quiere enviar SMS de confirmación al cliente</td>
+          <td>Llamar <code>action_cancel</code> o <code>action_confirm</code> en ese wizard</td>
+        </tr>
+        <tr>
+          <td><code>res_model: "stock.backorder.confirmation"</code></td>
+          <td>Stock insuficiente para algún producto</td>
+          <td>Crear y procesar el wizard de backorder</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note warn">
+      <div class="note-label">Por qué button_validate interrumpe el flujo</div>
+      Internamente, <code>button_validate</code> llama a <code>_pre_action_done_hook()</code>
+      antes de ejecutar <code>_action_done()</code> (que es quien realmente mueve el stock).
+      Si ese hook retorna algo distinto de <code>True</code>, <code>_action_done()</code>
+      nunca se ejecuta — el stock no se mueve hasta que se resuelva el wizard pendiente.
+    </div>
+
+    <h3>Manejo del backorder</h3>
+    <p>
+      El wizard de backorder no viene pre-creado en el retorno de <code>button_validate</code>
+      — Odoo solo retorna la acción para abrirlo. Hay que crearlo explícitamente usando
+      el <code>context</code> que viene en la respuesta:
+    </p>
+
+    <div class="code">
+      <div class="code-label">flujo completo de validación</div>
+      <pre>1. Llamar button_validate en stock.picking
+
+2. Verificar el retorno:
+
+   si result === true:
+     → picking en done, no hay nada más que hacer
+
+   si result.res_model === "confirm.stock.sms":
+     → llamar action_cancel en confirm.stock.sms con result.res_id
+     → el picking queda validado sin enviar SMS
+
+   si result.res_model === "stock.backorder.confirmation":
+     → crear wizard:
+          modelo:  "stock.backorder.confirmation"
+          método:  "create"
+          args:    [{ "pick_ids": result.context.default_pick_ids }]
+     → procesar wizard:
+          método:  "process"
+          args:    [[wizard_id]]
+     → resultado: picking original en done
+                  nuevo picking en ready (para las unidades pendientes)</pre>
+    </div>
+
+    <div class="note">
+      <div class="note-label">Qué es un backorder</div>
+      Si la venta pide 10 unidades pero solo hay 7 en stock, Odoo valida la entrega
+      de las 7 disponibles (picking original → <code>done</code>) y crea un segundo picking
+      en estado <code>ready</code> para las 3 restantes. Ese segundo picking es el backorder
+      y se resolverá cuando haya stock disponible.
+    </div>
+
+    <div class="note warn">
+      <div class="note-label">No usar skip_backorder</div>
+      Existe un contexto <code>skip_backorder: true</code> que omite el wizard y valida
+      lo disponible sin crear picking pendiente. Las unidades faltantes quedan sin registro —
+      el cliente pagó por ellas pero Odoo no tiene ningún documento de deuda pendiente.
+      No usar en flujos de venta reales.
+    </div>
+  </section>
+
+  <!-- FACTURA -->
+  <section>
+    <h2>Detalle — Crear y confirmar factura</h2>
+    <p>
+      La factura no se crea directamente en <code>account.move</code>.
+      Se usa el wizard <code>sale.advance.payment.inv</code>, que replica el flujo
+      interno de Odoo y garantiza que la factura quede correctamente vinculada
+      a la venta y sus líneas.
+    </p>
+
+    <div class="code">
+      <div class="code-label">paso 1 — crear el wizard</div>
+      <pre>modelo:  "sale.advance.payment.inv"
+método:  "create"
+args:    [{
+  "sale_order_ids":        [[6, 0, [saleId]]],
+  "advance_payment_method": "delivered"   <span class="cm">// facturar lo entregado</span>
+}]
+
+retorna: [wizardId]</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-label">paso 2 — ejecutar el wizard</div>
+      <pre>modelo:  "sale.advance.payment.inv"
+método:  "create_invoices"
+args:    [[wizardId]]
+
+retorna: { "res_id": invoiceId, ... }   <span class="cm">// res_id es el ID del account.move creado</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-label">paso 3 — confirmar la factura</div>
+      <pre>modelo:  "account.move"
+método:  "action_post"
+args:    [[invoiceId]]
+
+estado resultante: posted</pre>
+    </div>
+
+    <table>
+      <thead><tr><th>advance_payment_method</th><th>Qué factura</th></tr></thead>
+      <tbody>
+        <tr><td><code>"delivered"</code></td><td>Lo que fue entregado — para flujo estándar</td></tr>
+        <tr><td><code>"percentage"</code></td><td>Un porcentaje del total como adelanto</td></tr>
+        <tr><td><code>"fixed"</code></td><td>Un monto fijo como adelanto</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note warn">
+      <div class="note-label">Validar el stock antes de facturar</div>
+      Si se intenta crear la factura con <code>"delivered"</code> sin haber validado
+      el picking previamente, el wizard retorna <code>result: null</code> porque no hay
+      nada entregado que facturar. Siempre respetar el orden del flujo.
+    </div>
+  </section>
+
+  <!-- XML IDs -->
+  <section>
+    <h2>XML IDs — Referencias portables</h2>
+    <p>
+      Los IDs numéricos de Odoo varían entre instalaciones. El cliente con ID <code>14</code>
+      en un servidor puede ser el <code>37</code> en otro. Para hacer integraciones portables,
+      Odoo provee los <strong>XML IDs</strong>: identificadores de texto estables con formato
+      <code>modulo.nombre</code> que resuelven siempre al mismo registro.
+    </p>
+
+    <p>Para convertir un XML ID a ID numérico se consulta el modelo <code>ir.model.data</code>:</p>
+
+    <div class="code">
+      <div class="code-label">resolver xmlid "base.res_partner_12" a ID numérico</div>
+      <pre>modelo:  "ir.model.data"
+método:  "search_read"
+args:    [[["module", "=", "base"], ["name", "=", "res_partner_12"]]]
+kwargs:  { "fields": ["res_id"], "limit": 1 }
+
+retorna: [{ "res_id": 14 }]   <span class="cm">// 14 es el ID numérico en esa instalación</span></pre>
+    </div>
+
+    <p>Para encontrar XML IDs en Odoo activar el modo desarrollador y navegar a:<br>
+    <code>Ajustes → Técnico → Secuencias e identificadores → Identificadores externos</code></p>
+  </section>
+
+  <!-- BUENAS PRACTICAS -->
+  <section>
+    <h2>Buenas prácticas</h2>
+
+    <table>
+      <thead><tr><th>Práctica</th><th>Motivo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Credenciales en variables de entorno</strong></td>
+          <td>Nunca hardcodear URL, DB, usuario o contraseña en el código</td>
+        </tr>
+        <tr>
+          <td><strong>Verificar response.error, no solo el HTTP status</strong></td>
+          <td>Odoo devuelve HTTP 200 aunque la operación falle internamente</td>
+        </tr>
+        <tr>
+          <td><strong>Usar XML IDs en lugar de IDs numéricos</strong></td>
+          <td>Los IDs numéricos varían entre instalaciones y entornos</td>
+        </tr>
+        <tr>
+          <td><strong>Usar wizards cuando la UI los usa</strong></td>
+          <td>Saltear un wizard generalmente produce registros inconsistentes</td>
+        </tr>
+        <tr>
+          <td><strong>Verificar el res_model del retorno de button_validate</strong></td>
+          <td>Puede retornar distintos wizards según stock y configuración de Odoo</td>
+        </tr>
+        <tr>
+          <td><strong>Centralizar la lógica de comunicación</strong></td>
+          <td>Un único método que construye y envía requests evita repetir lógica</td>
+        </tr>
+        <tr>
+          <td><strong>Respetar el orden del flujo</strong></td>
+          <td>Confirmar antes de buscar el picking, validar stock antes de facturar</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ERRORES COMUNES -->
+  <section>
+    <h2>Errores comunes</h2>
+
+    <table>
+      <thead><tr><th>Error</th><th>Causa</th><th>Solución</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>result: false</code> en login</td>
+          <td>Credenciales incorrectas o DB inexistente</td>
+          <td>Verificar URL, nombre de DB, usuario y contraseña</td>
+        </tr>
+        <tr>
+          <td><code>Access Denied</code></td>
+          <td>Sin permisos sobre el modelo</td>
+          <td>Asignar grupos en Odoo: Ventas, Inventario, Facturación</td>
+        </tr>
+        <tr>
+          <td>XML ID not found</td>
+          <td>El XML ID no existe en esa instancia</td>
+          <td>Verificar en <code>ir.model.data</code> con modo desarrollador</td>
+        </tr>
+        <tr>
+          <td>No pickings found</td>
+          <td>La venta no fue confirmada antes de buscar el picking</td>
+          <td>Respetar el orden: crear → confirmar → buscar picking</td>
+        </tr>
+        <tr>
+          <td><code>result: null</code> al crear factura</td>
+          <td>El picking no fue validado, no hay nada entregado</td>
+          <td>Validar el stock picking antes de llamar create_invoices</td>
+        </tr>
+        <tr>
+          <td>button_validate retorna wizard inesperado</td>
+          <td>Configuración de Odoo activa wizards adicionales (SMS, reportes)</td>
+          <td>Verificar <code>res_model</code> y manejar cada caso explícitamente</td>
+        </tr>
+        <tr>
+          <td>ECONNREFUSED</td>
+          <td>URL o puerto incorrectos, Odoo no está corriendo</td>
+          <td>Verificar URL y puerto en las variables de entorno</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="footer">
+    <span>Odoo Sales Flow · JSON-RPC 2.0</span>
+    <span>MIT © 2025</span>
+  </footer>
+
+</div>
+</body>
+</html>
