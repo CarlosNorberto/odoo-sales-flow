@@ -29,7 +29,7 @@ const _prepare_order_line = async (uid) => {
                 price_unit: param.price_unit,
                 tax_id: [[6, 0, await Promise.all(param.tax_id.map(tax => xmlIdToResID(tax, uid)))]],
             }]);
-        }        
+        }
         return order_line;
     } catch (error) {
         throw new Error(`Error in _prepare_order_line: ${error}`);
@@ -39,10 +39,10 @@ const _prepare_order_line = async (uid) => {
 async function createSaleOrder() {
     try {
         const uid = await authenticate();
-        let order = await _prepare_order(uid);        
+        let order = await _prepare_order(uid);
         const orderLine = await _prepare_order_line(uid);
         order.order_line = orderLine;
-        const newOrder = await callMethod(uid, 'sale.order', 'create', [[order]]);        
+        const newOrder = await callMethod(uid, 'sale.order', 'create', [[order]]);
         // const getOrder = await callMethod(uid, 'sale.order', 'search_read', [[['id', '=', newOrder[0]]]], { fields: ['name', 'date_order', 'description'] });
         if (!newOrder) {
             throw new Error('Failed to create sale order');
@@ -79,15 +79,25 @@ async function getPickingIdForSale(saleId) {
 async function validateAndCreateBackorderStockPicking(pickingId) {
     try {
         const uid = await authenticate();
-        await callMethod(uid, 'stock.picking', 'button_validate', [[pickingId]]);
-        // StockBackorderConfirmation
-        const backorder = await callMethod(uid, 'stock.backorder.confirmation', 'create', [[{
-            pick_ids: [[6, 0, [pickingId]]],
-        }]]);
-        console.log(`Stock Picking ${pickingId} validated successfully.`);
-        if (backorder) {
-            await callMethod(uid, 'stock.backorder.confirmation', 'process', [[backorder[0]]]);
-            console.log(`Backorder ${backorder[0]} confirmed successfully.`);
+        const result = await callMethod(uid, 'stock.picking', 'button_validate', [[pickingId]], { context: { skip_sms: true } });
+        console.log('button_validate result:', JSON.stringify(result, null, 2));
+        if (result === true) {
+            console.log(`Stock Picking ${pickingId} validated successfully with no backorder.`);            
+        } else if (result.res_model === 'confirm.stock.sms') {
+            // confirmar el wizard de SMS y continuar sin enviar
+            await callMethod(uid, 'confirm.stock.sms', 'action_cancel', [[result.res_id]]);
+            // await callMethod(uid, 'confirm.stock.sms', 'action_confirm', [[result.res_id]]);
+            console.log(`Stock Picking ${pickingId} validated successfully.`);
+        } else if (result.res_model === 'stock.backorder.confirmation') {
+            // StockBackorderConfirmation
+            const backorder = await callMethod(uid, 'stock.backorder.confirmation', 'create', [[{
+                pick_ids: result.context.default_pick_ids
+            }]]);
+            console.log(`Stock Picking ${pickingId} validated successfully.`);
+            if (backorder) {
+                await callMethod(uid, 'stock.backorder.confirmation', 'process', [[backorder[0]]]);
+                console.log(`Backorder ${backorder[0]} confirmed successfully.`);
+            }
         }
     } catch (error) {
         console.error(`Error validating stock picking ${pickingId}:`, error.message);
@@ -104,7 +114,7 @@ async function createInvoiceFromSale(saleId) {
         if (!wizardId) {
             throw new Error('Failed to create sale advance payment');
         }
-        const respWizard = await callMethod(uid, 'sale.advance.payment.inv', 'create_invoices', [[wizardId[0]]]);        
+        const respWizard = await callMethod(uid, 'sale.advance.payment.inv', 'create_invoices', [[wizardId[0]]]);
         return respWizard.res_id;
     } catch (error) {
         throw new Error(`Error in createInvoiceFromSale: ${error}`);

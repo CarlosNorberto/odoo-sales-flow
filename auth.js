@@ -19,6 +19,10 @@ const authenticate = async () => {
         },
         id: Math.floor(Math.random() * 1000)
     });
+    if(response.data.error){
+        const msg = response.data.error.data?.message || response.data.error.message || 'Error desconocido';
+        throw new Error(`Odoo authentication error: ${msg}`);
+    }
 
     if(response.data.result){        
         return response.data.result;

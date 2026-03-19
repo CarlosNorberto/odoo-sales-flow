@@ -11,16 +11,20 @@ const callMethod = async (uid, model, method, args, kwargs={}) => {
         const response = await axios.post(`${odooUrl}/jsonrpc`, {
             jsonrpc: '2.0',
             method: 'call',
+            id: Math.floor(Math.random() * 1000),
             params: {
                 service: 'object',
                 method: 'execute_kw',
                 args: [db, uid, password, model, method, args, kwargs],
             },
-            id: Math.floor(Math.random() * 1000)
-        });    
+        });
+        if(response.data.error){
+            const msg = response.data.error.data?.message || response.data.error.message || 'Error desconocido';
+            throw new Error(`Odoo error [${model}.${method}]: ${msg}`);
+        }
         return response.data.result        
     } catch (error) {
-        throw new Error(`Error in callMethod: ${error}`);        
+        throw new Error(`Error in callMethod: ${error.message}`);        
     }
 }
 
@@ -33,7 +37,7 @@ const xmlIdToResID = async (xmlid, uid) =>{
         }
         return id[0].res_id;        
     } catch (error) {
-        throw new Error(`Error in xmlIdToResID: ${error}`);        
+        throw new Error(`Error in xmlIdToResID: ${error.message}`);        
     }
 }
 
