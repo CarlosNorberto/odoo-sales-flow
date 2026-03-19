@@ -80,7 +80,6 @@ async function validateAndCreateBackorderStockPicking(pickingId) {
     try {
         const uid = await authenticate();
         const result = await callMethod(uid, 'stock.picking', 'button_validate', [[pickingId]], { context: { skip_sms: true } });
-        console.log('button_validate result:', JSON.stringify(result, null, 2));
         if (result === true) {
             console.log(`Stock Picking ${pickingId} validated successfully with no backorder.`);            
         } else if (result.res_model === 'confirm.stock.sms') {
