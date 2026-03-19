@@ -10,7 +10,7 @@ const MENU_CHOICES = [
     { name: '3. Crear y confirmar venta', value: 'confirm_sale' },
     { name: '4. Crear, confirmar y validar salida de productos', value: 'validate_stock' },
     { name: '5. Crear, confirmar y crear factura', value: 'create_invoice' },
-    { name: '6. Confirmar factura (Flujo completo)', value: 'confirm_invoice' },    
+    { name: '6. Flujo completo', value: 'confirm_invoice' },    
     new inquirer.Separator('───────────────────────────────────'),    
     { name: '   Salir', value: 'exit' },
 ];
