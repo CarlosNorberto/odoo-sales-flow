@@ -347,20 +347,20 @@
     <div class="code">
       <div class="code-label">estructura base — cualquier operación</div>
       <pre>{
-  "jsonrpc": "2.0",
-  "method":  "call",
-  "id":      1,
+  "jsonrpc": "2.0",           <span class="cm">// siempre 2.0</span>
+  "method":  "call",          <span class="cm">// siempre "call"</span>
+  "id":      1,               <span class="cm">// cualquier número o string, para correlacionar respuestas</span>
   "params": {
-    "service": "object",
-    "method":  "execute_kw",
+    "service": "object",      <span class="cm">// siempre "object" para operaciones en modelos</span>
+    "method":  "execute_kw",  <span class="cm">// siempre "execute_kw" para operaciones en modelos</span>
     "args": [
-      "nombre_db",   <span class="cm">// base de datos</span>
-      2,             <span class="cm">// uid obtenido al autenticar</span>
-      "password",    <span class="cm">// contraseña (va en cada request)</span>
-      "sale.order",  <span class="cm">// modelo de Odoo</span>
-      "create",      <span class="cm">// método del modelo</span>
-      [[{ ... }]],   <span class="cm">// argumentos posicionales</span>
-      {}             <span class="cm">// argumentos nombrados (kwargs)</span>
+      "nombre_db",            <span class="cm">// base de datos</span>
+      2,                      <span class="cm">// uid obtenido al autenticar</span>
+      "password",             <span class="cm">// contraseña (va en cada request)</span>
+      "sale.order",           <span class="cm">// modelo de Odoo</span>
+      "create",               <span class="cm">// método del modelo</span>
+      [[{ ... }]],            <span class="cm">// argumentos posicionales</span>
+      {}                      <span class="cm">// argumentos nombrados (kwargs)</span>
     ]
   }
 }</pre>
