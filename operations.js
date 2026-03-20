@@ -6,12 +6,7 @@ const _prepare_order = async (uid) => {
     try {
         let order = {
             partner_id: await xmlIdToResID(params.order.partner_id, uid),
-            date_order: params.order.date_order,
-            // order_type: 'out_invoice',
-            // description: 'Test Sale Order',
-            // warehouse_id: await xmlIdToResID('stock.warehouse_demo', uid),
-            // stock_location_id: await xmlIdToResID('stock.stock_location_demo', uid),
-            // process_type: 'order',
+            date_order: params.order.date_order,            
         }
         return order;
     } catch (error) {
