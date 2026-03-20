@@ -348,10 +348,10 @@
       <div class="code-label">estructura base — cualquier operación</div>
       <pre>{
   "jsonrpc": "2.0",           <span class="cm">// siempre 2.0</span>
-  "method":  "call",          <span class="cm">// siempre "call"</span>
+  "method":  "call",          <span class="cm">// siempre "call" en odoo</span>
   "id":      1,               <span class="cm">// cualquier número o string, para correlacionar respuestas</span>
   "params": {
-    "service": "object",      <span class="cm">// siempre "object" para operaciones en modelos</span>
+    "service": "object",      <span class="cm">// siempre "object" para operaciones en modelos, "auth" para autenticación</span>
     "method":  "execute_kw",  <span class="cm">// siempre "execute_kw" para operaciones en modelos</span>
     "args": [
       "nombre_db",            <span class="cm">// base de datos</span>
