@@ -12,12 +12,12 @@ const authenticate = async () => {
     const response = await axios.post(`${odooUrl}/jsonrpc`, {
         jsonrpc: '2.0',
         method: 'call',
+        id: Math.floor(Math.random() * 1000),
         params: {
             service: 'common',
             method: 'login',
             args: [db, username, password],
         },
-        id: Math.floor(Math.random() * 1000)
     });
     if(response.data.error){
         const msg = response.data.error.data?.message || response.data.error.message || 'Error desconocido';
